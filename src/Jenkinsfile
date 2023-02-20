@@ -12,18 +12,32 @@ pipeline {
   }
 
   parameters {
-    string(name: 'YBA_BASE_URL', defaultValue: '', description: 'enpoint for yba', trim: true)
+    string(name: 'YBA_BASE_URL', defaultValue: '', description: 'endpoint for yba', trim: true)
     string(name: 'YBA_USERNAME', defaultValue: '', description: 'username for yba', trim: true)
     string(name: 'YBA_PASSWORD', defaultValue: '', description: 'password for yba', trim: true)
   }
+
+  stage('Checkout Code') {
+        cleanWs()
+        checkout(
+            [$class: 'GitSCM',
+            branches: [[name: '*/init']],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [
+                [$class: 'CloneOption', noTags: true],
+                [$class: 'SubmoduleOption', recursiveSubmodules: true],
+                [$class: 'WipeWorkspace']],
+                userRemoteConfigs: [[
+                    url: 'https://github.com/shaharuk-yb/yba-jenkins.git']]])
+    }
+
 
   stages{
     stage("Setup") {
       steps {
           sh """
-            git clone https://github.com/shaharuk-yb/yba-jenkins.git
-            cd yba-jenkins
             pip3 install -r requirements.txt
+            ls -al
           """
       }
     }

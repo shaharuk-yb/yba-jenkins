@@ -1,5 +1,5 @@
 pipeline {
-  agent { label 'centos7-itest' }
+  agent { label 'master' }
 
   options {
     timestamps()

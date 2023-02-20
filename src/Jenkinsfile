@@ -23,7 +23,7 @@ pipeline {
           sh """
             git clone https://github.com/shaharuk-yb/yba-jenkins.git
             cd yba-jenkins
-            pip3 install requirements.txt
+            pip3 install -r requirements.txt
           """
       }
     }

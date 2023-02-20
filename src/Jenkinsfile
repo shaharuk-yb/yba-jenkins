@@ -50,39 +50,5 @@ pipeline {
           """
       }
     }
-
-//     stage("Posting results") {
-//       steps {
-//         script {
-//           if(fileExists('output.props')){
-//             def props = readProperties file: "output.props"
-//             if( "${props.SKIPPED}" == "FALSE" ) {
-//               if(fileExists("${params.yugabyte_release_number}-b${params.yugabyte_build_number}_tpcc_output.txt")) {
-//                 slackUploadFile(
-//                   channel: "#perf-regression",
-//                   filePath: "${params.yugabyte_release_number}-b${params.yugabyte_build_number}_tpcc_output.txt",
-//                   initialComment: "${props.status}: 1k-wh-restore-execute-TPCC benchmark test ${props.test_id} for ${params.yugabyte_release_number}-b${params.yugabyte_build_number}. Check logs here: ${props.jenkins_build}console"
-//                 )
-//               }
-//               else {
-//                 slackSend(
-//                   color: 'danger',
-//                   channel: '#perf-regression',
-//                   message: "${props.status}: 1k-wh-restore-execute-TPCC benchmark for ${params.yugabyte_release_number}-b${params.yugabyte_build_number}. Check logs here: ${props.jenkins_build}console"
-//                 )
-//               }
-//             }
-//           }
-//           else {
-//             // there is an error in test run
-//             slackSend(
-//               color: 'danger',
-//               channel: '#perf-regression',
-//               message: "FAILED: 1k-wh-restore-execute-TPCC benchmark for ${params.yugabyte_release_number}-b${params.yugabyte_build_number}. Check logs here: ${BUILD_URL}"
-//             )
-//           }
-//         }
-//       }
-//     }
   }
 }

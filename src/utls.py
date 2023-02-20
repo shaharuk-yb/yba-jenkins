@@ -4,4 +4,3 @@ YBA_USERNAME = os.environ.get("YBA_USERNAME", "default_user")
 YBA_PASSWORD = os.environ.get("YBA_PASSWORD", "default_password")
 
 UNIVERSE_CREATE_TEMPLATE = {}
-

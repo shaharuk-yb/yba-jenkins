@@ -1,0 +1,73 @@
+pipeline {
+  agent { label 'centos7-itest' }
+
+  options {
+    timestamps()
+    buildDiscarder(
+      logRotator(
+        daysToKeepStr: '20'
+      )
+    )
+    ansiColor('xterm')
+  }
+
+  parameters {
+    string(name: 'YBA_BASE_URL', defaultValue: '', description: 'enpoint for yba', trim: true)
+    string(name: 'YBA_USERNAME', defaultValue: '', description: 'username for yba', trim: true)
+    string(name: 'YBA_PASSWORD', defaultValue: '', description: 'password for yba', trim: true)
+  }
+
+  stages{
+    stage("Setup") {
+      steps {
+          sh """
+            git clone https://github.com/shaharuk-yb/yba-jenkins.git
+            cd yba-jenkins
+            pip install requirements.txt
+          """
+      }
+    }
+    stage("Run") {
+      steps {
+          sh """
+            cd yba-jenkins
+            python runner.py
+          """
+      }
+    }
+
+//     stage("Posting results") {
+//       steps {
+//         script {
+//           if(fileExists('output.props')){
+//             def props = readProperties file: "output.props"
+//             if( "${props.SKIPPED}" == "FALSE" ) {
+//               if(fileExists("${params.yugabyte_release_number}-b${params.yugabyte_build_number}_tpcc_output.txt")) {
+//                 slackUploadFile(
+//                   channel: "#perf-regression",
+//                   filePath: "${params.yugabyte_release_number}-b${params.yugabyte_build_number}_tpcc_output.txt",
+//                   initialComment: "${props.status}: 1k-wh-restore-execute-TPCC benchmark test ${props.test_id} for ${params.yugabyte_release_number}-b${params.yugabyte_build_number}. Check logs here: ${props.jenkins_build}console"
+//                 )
+//               }
+//               else {
+//                 slackSend(
+//                   color: 'danger',
+//                   channel: '#perf-regression',
+//                   message: "${props.status}: 1k-wh-restore-execute-TPCC benchmark for ${params.yugabyte_release_number}-b${params.yugabyte_build_number}. Check logs here: ${props.jenkins_build}console"
+//                 )
+//               }
+//             }
+//           }
+//           else {
+//             // there is an error in test run
+//             slackSend(
+//               color: 'danger',
+//               channel: '#perf-regression',
+//               message: "FAILED: 1k-wh-restore-execute-TPCC benchmark for ${params.yugabyte_release_number}-b${params.yugabyte_build_number}. Check logs here: ${BUILD_URL}"
+//             )
+//           }
+//         }
+//       }
+//     }
+  }
+}

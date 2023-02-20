@@ -17,7 +17,9 @@ pipeline {
     string(name: 'YBA_PASSWORD', defaultValue: '', description: 'password for yba', trim: true)
   }
 
-  stage('Checkout Code') {
+
+  stages{
+    stage('Checkout Code') {
         cleanWs()
         checkout(
             [$class: 'GitSCM',
@@ -30,9 +32,6 @@ pipeline {
                 userRemoteConfigs: [[
                     url: 'https://github.com/shaharuk-yb/yba-jenkins.git']]])
     }
-
-
-  stages{
     stage("Setup") {
       steps {
           sh """

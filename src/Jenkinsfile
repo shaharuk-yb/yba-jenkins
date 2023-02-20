@@ -20,17 +20,19 @@ pipeline {
 
   stages{
     stage('Checkout Code') {
-        cleanWs()
-        checkout(
-            [$class: 'GitSCM',
-            branches: [[name: '*/init']],
-            doGenerateSubmoduleConfigurations: false,
-            extensions: [
-                [$class: 'CloneOption', noTags: true],
-                [$class: 'SubmoduleOption', recursiveSubmodules: true],
-                [$class: 'WipeWorkspace']],
-                userRemoteConfigs: [[
-                    url: 'https://github.com/shaharuk-yb/yba-jenkins.git']]])
+        steps {
+            cleanWs()
+            checkout(
+                [$class: 'GitSCM',
+                branches: [[name: '*/init']],
+                doGenerateSubmoduleConfigurations: false,
+                extensions: [
+                    [$class: 'CloneOption', noTags: true],
+                    [$class: 'SubmoduleOption', recursiveSubmodules: true],
+                    [$class: 'WipeWorkspace']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/shaharuk-yb/yba-jenkins.git']]])
+        }
     }
     stage("Setup") {
       steps {

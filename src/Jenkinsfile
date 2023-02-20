@@ -30,7 +30,7 @@ pipeline {
     stage("Run") {
       steps {
           sh """
-            cd yba-jenkins
+            cd yba-jenkins/src
             python runner.py
           """
       }

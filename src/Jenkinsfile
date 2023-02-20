@@ -38,7 +38,6 @@ pipeline {
       steps {
           sh """
             pip3 install -r requirements.txt --user
-            ls -al
           """
       }
     }

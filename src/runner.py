@@ -14,7 +14,7 @@ class Runner:
         self.logger = logging.getLogger("runner")
         self.yba = YBAOps({"endpoint": YBA_BASE_URL, "username": YBA_USERNAME, "password": YBA_PASSWORD})
 
-    def create_print_delete_universe(self, template):
+    def create_print_delete_universe(self, template, universe_name):
         # create universe with template
         try:
             self.logger.info("Creating universe with payload")
@@ -34,8 +34,8 @@ class Runner:
         self.logger.info(self.yba.get_universe_nodes(template["universeUUID"]))
 
         # delete universe
-        self.yba.delete_universe("sshaikh-test1")
-        if self.yba.wait_for_task_to_delete(aws_1node_1az_rf1["universeUUID"], 600, 120) == "success":
+        self.yba.delete_universe(universe_name)
+        if self.yba.wait_for_task_to_delete(template["universeUUID"], 600, 120) == "success":
             self.logger.info("Successfully deleted the universe")
         else:
             self.logger.info("Failed to delete the universe")
@@ -52,10 +52,10 @@ class Runner:
             node['userIntent']['ybSoftwareVersion'] = "2.17.2.0-b176"
             template['nodePrefix'] = 'yb-dev-{}'.format(universe_name)
 
-        return template
+        return template, universe_name
 
 
 if __name__ == "__main__":
     runner = Runner()
-    template = runner.modify_template(aws_1node_1az_rf1)
-    runner.create_print_delete_universe(template)
+    template, universe_name = runner.modify_template(aws_1node_1az_rf1)
+    runner.create_print_delete_universe(template, universe_name)

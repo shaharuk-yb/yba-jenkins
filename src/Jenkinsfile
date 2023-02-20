@@ -24,7 +24,7 @@ pipeline {
             cleanWs()
             checkout(
                 [$class: 'GitSCM',
-                branches: [[name: '*/init2']],
+                branches: [[name: '*/main']],
                 doGenerateSubmoduleConfigurations: false,
                 extensions: [
                     [$class: 'CloneOption', noTags: true],

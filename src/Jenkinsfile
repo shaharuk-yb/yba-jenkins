@@ -23,7 +23,7 @@ pipeline {
           sh """
             git clone https://github.com/shaharuk-yb/yba-jenkins.git
             cd yba-jenkins
-            pip install requirements.txt
+            pip3 install requirements.txt
           """
       }
     }
@@ -31,7 +31,7 @@ pipeline {
       steps {
           sh """
             cd yba-jenkins/src
-            python runner.py
+            python3 runner.py
           """
       }
     }

@@ -1,0 +1,53 @@
+pipeline {
+  agent { label 'master' }
+
+  options {
+    timestamps()
+    buildDiscarder(
+      logRotator(
+        daysToKeepStr: '20'
+      )
+    )
+    ansiColor('xterm')
+  }
+
+  parameters {
+    string(name: 'YBA_BASE_URL', defaultValue: '', description: 'endpoint for yba', trim: true)
+    string(name: 'YBA_USERNAME', defaultValue: '', description: 'username for yba', trim: true)
+    string(name: 'YBA_PASSWORD', defaultValue: '', description: 'password for yba', trim: true)
+  }
+
+
+  stages{
+    stage('Checkout Code') {
+        steps {
+            cleanWs()
+            checkout(
+                [$class: 'GitSCM',
+                branches: [[name: '*/init']],
+                doGenerateSubmoduleConfigurations: false,
+                extensions: [
+                    [$class: 'CloneOption', noTags: true],
+                    [$class: 'SubmoduleOption', recursiveSubmodules: true],
+                    [$class: 'WipeWorkspace']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/shaharuk-yb/yba-jenkins.git']]])
+        }
+    }
+    stage("Setup") {
+      steps {
+          sh """
+            pip3 install -r requirements.txt --user
+          """
+      }
+    }
+    stage("Run") {
+      steps {
+          sh """
+            cd src
+            python3 runner.py
+          """
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+certifi
+charset-normalizer
+docutils
+lockfile
+pid
+python-daemon
+requests
+service
+setproctitle
+urllib3

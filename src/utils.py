@@ -1,9 +1,29 @@
 import os
+import tempfile
+
 YBA_BASE_URL = os.environ.get("YBA_BASE_URL", "default_url")
 YBA_USERNAME = os.environ.get("YBA_USERNAME", "default_user")
 YBA_PASSWORD = os.environ.get("YBA_PASSWORD", "default_password")
-
+CUSTOM_KEYPAIR_PATH = "/path/to/keypair"
 UNIVERSE_CREATE_TEMPLATE = {}
+
+MASTER_GFLAGS = {
+    'callhome_enabled': 'false',
+}
+TSERVER_GFLAGS = {
+    'callhome_enabled': 'false',
+}
+
+
+def get_tempfile(file_content):
+    fd, path = tempfile.mkstemp(".crt")
+    try:
+        os.write(fd, file_content.encode())
+        os.close(fd)
+    except IOError:
+        raise RuntimeError("Error creating temp cert file")
+    return path
+
 
 aws_1node_1az_rf1 = {
         "clusters": [

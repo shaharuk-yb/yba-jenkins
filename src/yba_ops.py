@@ -57,6 +57,7 @@ class YBAOps:
         # get csrf token
         csrf = self.request.get(url, verify=False).cookies.get("csrfCookie")
         req_json = {"email": yba["username"], "password": yba["password"]}
+        self.customer_prefix = str(yba["username"]).rstrip("@yugabyte.com")
         self.headers = {
             "content-type": "application/json",
             "Csrf-Token": csrf
@@ -604,7 +605,7 @@ class YBAOps:
             params["sshPort"] = cloud_config.ssh_port
         if cloud_config.custom_ssh:
             params.update({
-                "keyPairName": self.login_user.customer_prefix,
+                "keyPairName": self.customer_prefix,
                 "sshUser": cloud_config.custom_ssh_user,
                 "sshPrivateKeyContent": open(CUSTOM_KEYPAIR_PATH, "r").read()
             })
@@ -877,9 +878,6 @@ class YBAOps:
         raise RuntimeError(error_msg)
 
     def write_task_logs(self, file_name, task_uuid, correlation_id):
-        if not self.test_log_dir:
-            return
-
         try:
             logs_keyword = task_uuid
             logs_limit = 5000
@@ -891,7 +889,7 @@ class YBAOps:
                 route=f"/api/v1/logs?maxLines={logs_limit}&queryRegex={logs_keyword}",
                 params=None, headers=self.headers, log_req=False
                 )
-            with open(os.path.join(self.test_log_dir, file_name), 'w') as f:
+            with open(file_name, 'w') as f:
                 f.write(error_logs)
             logging.info(f"Wrote task failure logs to {file_name}")
         except Exception as e:
